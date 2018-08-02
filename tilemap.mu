@@ -1,0 +1,18 @@
+<tilemap>
+  <graphics>
+    <tile>
+      <x>0</x>
+      <y>0</y>
+      <w>32</w>
+      <h>32</h>
+    </tile>
+  </graphics>
+  <collisions>
+    <block>
+      <x>0</x>
+      <y>0</y>
+      <halfWidth>16</halfWidth>
+      <halfHeight>16</halfHeight>
+    </block>
+  </collisions>
+</tilemap>
