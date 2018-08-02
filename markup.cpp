@@ -57,6 +57,7 @@ Markup::Markup(std::string str) {
 
 Markup& Markup::operator[](std::string str) {
 	//generate and access this sub-node
+	nodeMap[str].attributes["_name"] = str;
 	return nodeMap[str];
 }
 

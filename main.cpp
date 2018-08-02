@@ -16,5 +16,9 @@ int main(int argc, char* argv[]) {
 
 	std::cout << markup["graphics"]["tile"]["h"]["_leaf"].ToString() << std::endl;
 
+	markup["a"]["b"]["c"] = "hello world";
+
+	std::cout << markup.ToString() << std::endl;
+
 	return 0;
 }
