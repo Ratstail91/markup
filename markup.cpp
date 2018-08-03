@@ -81,7 +81,7 @@ void mergeNodeTrees(Markup& dest, Markup src) {
 
 Markup::Markup() {
 	//placeholder super tag
-	attributes["_name"] = "markup";
+	attributes[MU_NAME] = "markup";
 }
 
 Markup::Markup(std::string str) {
@@ -90,7 +90,7 @@ Markup::Markup(std::string str) {
 
 Markup& Markup::operator[](std::string str) {
 	//generate and access this sub-node
-	nodeMap[str].attributes["_name"] = str;
+	nodeMap[str].attributes[MU_NAME] = str;
 	return nodeMap[str];
 }
 
@@ -98,9 +98,10 @@ Markup& Markup::operator=(std::string str) {
 	str = grind(str);
 	if (str[0] == '<') {
 		Markup tmp(str);
-		mergeNodeTrees(*this, Markup("<" + attributes["_name"] + ">" + tmp.ToString() + "</" + attributes["_name"] + ">"));
+//		mergeNodeTrees(*this, Markup("<" + attributes[MU_NAME] + ">" + tmp.ToString() + "</" + attributes[MU_NAME] + ">"));
+		mergeNodeTrees(*this, tmp);
 	} else {
-		attributes["_value"] = str;
+		attributes[MU_VALUE] = str;
 	}
 	return *this;
 }
@@ -108,30 +109,26 @@ Markup& Markup::operator=(std::string str) {
 std::string Markup::ToString() {
 	std::string result;
 
-	result += "<" + attributes["_name"];
-
+	result += "<" + attributes[MU_NAME];
 	//print the attributes
 	for (auto att : attributes) {
-		if (att.first == "_name" || att.first == "_value") {
+		if (att.first == MU_NAME || att.first == MU_VALUE) {
 			continue;
 		}
 		result += " " + att.first + "=\"" + att.second + "\"";
 	}
 
 	result += ">";
-
 	if (IsLeaf()) {
-		result += attributes["_value"];
+		result += attributes[MU_VALUE];
 	} else {
 		//fill with all children
 		for (auto it : nodeMap) {
 			result += it.second.ToString();
 		}
 	}
-
 	//end this node
-	result += "</" + attributes["_name"] + ">";
-	
+	result += "</" + attributes[MU_NAME] + ">";
 	return result;
 }
 
@@ -144,16 +141,15 @@ int Markup::FromString(std::string str) {
 
 	//get the open tag (without braces, with attributes)
 	std::string openTag = str.substr(1, str.find('>') - 1);
-
 	//truncate the open tag from str
 	str = str.substr(openTag.size() + 2, std::string::npos);
-
 	//get the open tag as attributes
 	std::vector<std::string> attr = splitString(openTag, ' ');
 
 	//save the attributes
-	attributes["_name"] = attr[0];
+	attributes[MU_NAME] = attr[0];
 	for (int i = 1; i < attr.size(); i++) {
+	
 		std::vector<std::string> pair = splitString(attr[i], '=');
 
 		//TODO: ensure the attribute integrity
@@ -171,21 +167,20 @@ int Markup::FromString(std::string str) {
 	//this node is a leaf
 	std::string tmpStr = grind(childStr);
 	if (tmpStr[0] != '<') {
-		attributes["_value"] = childStr;
+		attributes[MU_VALUE] = childStr;
 		return nextSiblingPos;
 	}
-
 	//read each child node
 	int nextPos;
 	do {
 		//recurse to a temp node
 		Markup tmpNode;
 		nextPos = tmpNode.FromString(childStr);
-		std::string name = tmpNode.attributes["_name"];
+		std::string name = tmpNode.attributes[MU_NAME];
 
 		//save the data from the temp node
 		nodeMap[name] = tmpNode;
-//		nodeMap[name].attributes.erase("_name"); //WARNING: Name is stored in two places
+//		nodeMap[name].attributes.erase(MU_NAME); //WARNING: Name is stored in two places
 
 		//delete the processed node from the string
 		childStr = childStr.substr(nextPos, std::string::npos);

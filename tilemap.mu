@@ -9,5 +9,29 @@
   </graphics>
   <collisions>
     <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
   </collisions>
 </tilemap>

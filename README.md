@@ -1,4 +1,8 @@
-MarkupNode
+# WARNING
+
+This utility is not supported, and does not function correctly. It does not fuction according to the MXL specification.
+
+Markup
 ===
 
 This is a self-contained markup parser written entirely in C++. It is guaranteed to accept it's own output.
@@ -6,20 +10,18 @@ This is a self-contained markup parser written entirely in C++. It is guaranteed
 Instructions
 ---
 
-This is as close to the markup standard as I could get in a single attempt. There are a few differences as a result:
+This is as close to the markup standard as I could get in a single attempt. There are a few differences as a result, see Bugs.
 
-* Everything must be in a single super tag
-* Opening tags must not have spaces between the '<' character and the name
 * If no super tag name is given, "markup" will be used as a placeholder
 * You'll have to load the files yourself
 
 ```C++
 Markup markup1("<hello><world>foobar</world></hello>");
-string foobar = markup1["world"].GetAttribute("_value");
+string foobar = markup1["world"].GetAttribute(MU_VALUE);
 
 Markup markup2;
 markup2 = "<outertag><tag>str</tag></outertag>";
-string str = markup2["outertag"]["tag"].GetAttribute("_value");
+string str = markup2["tag"].GetAttribute(MU_VALUE);
 ```
 
 Bugs
@@ -27,6 +29,8 @@ Bugs
 
 * Everything must be in a single super tag (default is "markup")
 * Opening tags must not have spaces between the '<' character and the name
+* Parent and child tags must not have the same name
+* Sibling tags must not have the same name either
 * It's potentially slow due to the "grinding"
 
 Copyright

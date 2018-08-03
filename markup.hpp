@@ -24,6 +24,9 @@
 #include <map>
 #include <string>
 
+#define MU_NAME "__name"
+#define MU_VALUE "__value"
+
 class Markup {
 public:
 	Markup();
