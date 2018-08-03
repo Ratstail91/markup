@@ -10,21 +10,24 @@ This is as close to the markup standard as I could get in a single attempt. Ther
 
 * Everything must be in a single super tag
 * Opening tags must not have spaces between the '<' character and the name
-* The leaf nodes are stored in a node called "_leaf"
+* If no super tag name is given, "markup" will be used as a placeholder
 * You'll have to load the files yourself
 
 ```C++
-Markup markup = "<hello><world>foobar</world></hello>";
-string foobar = markup["world"]["_leaf"].ToString();
+Markup markup1("<hello><world>foobar</world></hello>");
+string foobar = markup1["world"].GetAttribute("_value");
+
+Markup markup2;
+markup2 = "<outertag><tag>str</tag></outertag>";
+string str = markup2["outertag"]["tag"].GetAttribute("_value");
 ```
 
 Bugs
 ---
 
-* Everything must be in a single super tag
+* Everything must be in a single super tag (default is "markup")
 * Opening tags must not have spaces between the '<' character and the name
-* The leaf nodes are stored in a node called "_leaf"
-* It's very slow
+* It's potentially slow due to the "grinding"
 
 Copyright
 ---

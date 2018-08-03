@@ -27,7 +27,7 @@
 #include <vector>
 
 //utilities
-std::vector<std::string> splitString(std::string str, char delim) {
+static std::vector<std::string> splitString(std::string str, char delim) {
 	std::vector<std::string> result;
 	std::istringstream iss(str);
 	std::string tmp;
@@ -39,19 +39,18 @@ std::vector<std::string> splitString(std::string str, char delim) {
 	return result;
 }
 
-std::string chomp(std::string& str) {
+static std::string chomp(std::string str) {
 	std::string chompable = " \n\r\t";
 	str.erase(0, str.find_first_not_of(chompable));
 	str.erase(str.find_last_not_of(chompable)+1);
 	return str;
 }
 
-bool grind(std::string& str) {
+static std::string grind(std::string str) {
 	/* This function is a custom solution.
 	 * It will remove most whitespace characters, but will allow
-	 * a single space character to remain when found.
-	 * HOWEVER if the first characters are spaces, it will remove
-	 * them all and return true.
+	 * a single space character to remain when found except at the
+	 * beginning and end.
 	*/
 	std::string result;
 	bool space = true; //remove leading spaces
@@ -67,9 +66,22 @@ bool grind(std::string& str) {
 			space = false;
 		}
 	}
-	bool ret = isspace(str[0]);
-	str = result;
-	return ret;
+	return chomp(result);
+}
+
+void mergeNodeTrees(Markup& dest, Markup src) {
+	for(auto& it : src.attributes) {
+		dest.attributes[it.first] = it.second;
+	}
+
+	for (auto it : src.nodeMap) {
+		mergeNodeTrees(dest[it.first], it.second);
+	}
+}
+
+Markup::Markup() {
+	//placeholder super tag
+	attributes["_name"] = "markup";
 }
 
 Markup::Markup(std::string str) {
@@ -83,22 +95,24 @@ Markup& Markup::operator[](std::string str) {
 }
 
 Markup& Markup::operator=(std::string str) {
-	FromString(str);
+	str = grind(str);
+	if (str[0] == '<') {
+		Markup tmp(str);
+		mergeNodeTrees(*this, Markup("<" + attributes["_name"] + ">" + tmp.ToString() + "</" + attributes["_name"] + ">"));
+	} else {
+		attributes["_value"] = str;
+	}
 	return *this;
 }
 
 std::string Markup::ToString() {
 	std::string result;
 
-	if (IsLeaf()) {
-		return attributes["_value"];
-	}
-
 	result += "<" + attributes["_name"];
 
 	//print the attributes
 	for (auto att : attributes) {
-		if (att.first == "_name") {
+		if (att.first == "_name" || att.first == "_value") {
 			continue;
 		}
 		result += " " + att.first + "=\"" + att.second + "\"";
@@ -106,9 +120,13 @@ std::string Markup::ToString() {
 
 	result += ">";
 
-	//fill with all children
-	for (auto it : nodeMap) {
-		result += it.second.ToString();
+	if (IsLeaf()) {
+		result += attributes["_value"];
+	} else {
+		//fill with all children
+		for (auto it : nodeMap) {
+			result += it.second.ToString();
+		}
 	}
 
 	//end this node
@@ -118,20 +136,11 @@ std::string Markup::ToString() {
 }
 
 int Markup::FromString(std::string str) {
-	//remove whitespace
-	bool chomped = grind(str);
+	//count the chomped amount (for the siblings)
+	int chompedAmount = str.size() - grind(str).size();
 
-	//ignore blanks
-	if (!str.size()) {
-		return 1;
-	}
-
-	//this node is a leaf
-	if (str[0] != '<') {
-		attributes["_name"] = "_leaf";
-		attributes["_value"] = str;
-		return str.size();
-	}
+	//remove most whitespace
+	str = grind(str);
 
 	//get the open tag (without braces, with attributes)
 	std::string openTag = str.substr(1, str.find('>') - 1);
@@ -147,16 +156,26 @@ int Markup::FromString(std::string str) {
 	for (int i = 1; i < attr.size(); i++) {
 		std::vector<std::string> pair = splitString(attr[i], '=');
 
-		attributes[pair[0]] = pair[1].substr(1, pair[1].size() - 2);
+		//TODO: ensure the attribute integrity
+
+		attributes[pair[0]] = pair[1].substr(1, pair[1].size() - 2); //substr here to strip the quote marks
 	}
 
 	//get the closing tag position
 	int closingTagPos = str.find(std::string() + "</" + attr[0] + ">");
-	int nextSiblingPos = closingTagPos + attr[0].size() + 3 + openTag.size() + 2 + chomped;
+	int nextSiblingPos = closingTagPos + attr[0].size() + 3 + openTag.size() + 2 + chompedAmount;
 
 	//get the child string
 	std::string childStr = str.substr(0, closingTagPos);
 
+	//this node is a leaf
+	std::string tmpStr = grind(childStr);
+	if (tmpStr[0] != '<') {
+		attributes["_value"] = childStr;
+		return nextSiblingPos;
+	}
+
+	//read each child node
 	int nextPos;
 	do {
 		//recurse to a temp node
@@ -177,4 +196,12 @@ int Markup::FromString(std::string str) {
 
 bool Markup::IsLeaf() {
 	return !nodeMap.size();
+}
+
+std::string Markup::GetAttribute(std::string key) {
+	return attributes[key];
+}
+
+std::string Markup::SetAttribute(std::string key, std::string val) {
+	return attributes[key] = val;
 }

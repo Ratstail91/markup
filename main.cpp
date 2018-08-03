@@ -5,6 +5,7 @@
 #include <sstream>
 
 int main(int argc, char* argv[]) {
+	//load the file
 	std::ifstream is("tilemap.mu");
 	std::stringstream buffer;
 
@@ -12,13 +13,12 @@ int main(int argc, char* argv[]) {
 
 	Markup markup = buffer.str();
 
-	std::cout << markup.ToString() << std::endl;
-
-	std::cout << markup["graphics"]["tile"]["h"]["_leaf"].ToString() << std::endl;
-
+	//modify the markup
 	markup["a"]["b"]["c"] = "hello world";
+	markup["a"] = "<b>foobar</b>";
 
-	std::cout << markup.ToString() << std::endl;
+	//it accepts it's own output
+	std::cout << Markup(markup.ToString()).ToString() << std::endl;
 
 	return 0;
 }

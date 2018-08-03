@@ -8,11 +8,6 @@
     </tile>
   </graphics>
   <collisions>
-    <block>
-      <x>0</x>
-      <y>0</y>
-      <halfWidth>16</halfWidth>
-      <halfHeight>16</halfHeight>
-    </block>
+    <block x="0" y="0" halfWidth="16" halfHeight="16">solid</block>
   </collisions>
 </tilemap>
